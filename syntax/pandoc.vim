@@ -248,7 +248,8 @@ endif
 syn include @HTML syntax/html.vim
 syn match pandocHTML /<\/\?\a\_.\{-}>/ contains=@HTML
 " Support HTML multi line comments
-syn region pandocHTMLComment start=/<!--\s\=/ end=/\s\=-->/ keepend contains=pandocHTMLCommentStart,pandocHTMLCommentEnd
+syn keyword pandocTodo contained TODO FIXME NOTE
+syn region pandocHTMLComment start=/<!--\s\=/ end=/\s\=-->/ keepend contains=pandocHTMLCommentStart,pandocHTMLCommentEnd,pandocTodo
 call s:WithConceal('html_c_s', 'syn match pandocHTMLCommentStart /<!--/ contained', 'conceal cchar='.s:cchars['html_c_s'])
 call s:WithConceal('html_c_e', 'syn match pandocHTMLCommentEnd /-->/ contained', 'conceal cchar='.s:cchars['html_c_e'])
 " }}}3
@@ -588,6 +589,7 @@ hi link pandocLaTeXDelimiter texDelimiter
 hi link pandocHTMLComment Comment
 hi link pandocHTMLCommentStart Delimiter
 hi link pandocHTMLCommentEnd Delimiter
+hi link pandocTodo Todo
 hi link pandocBlockQuote Comment
 hi link pandocBlockQuoteMark Comment
 hi link pandocAmpersandEscape Special
