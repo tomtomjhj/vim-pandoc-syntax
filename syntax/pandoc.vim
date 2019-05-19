@@ -586,8 +586,8 @@ hi link pandocHTMLComment Comment
 hi link pandocHTMLCommentStart Delimiter
 hi link pandocHTMLCommentEnd Delimiter
 hi link pandocTodo Todo
-hi link pandocBlockQuote Comment
-hi link pandocBlockQuoteMark Comment
+hi link pandocBlockQuote markdownItalic
+hi link pandocBlockQuoteMark markdownItalic
 hi link pandocAmpersandEscape Special
 
 " if the user sets g:pandoc#syntax#codeblocks#ignore to contain
