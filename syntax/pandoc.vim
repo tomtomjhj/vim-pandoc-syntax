@@ -700,3 +700,4 @@ let b:current_syntax = 'pandoc'
 
 syntax sync clear
 syntax sync minlines=1000
+syntax iskeyword 48-57,a-z,A-Z,192-255
