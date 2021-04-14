@@ -257,16 +257,24 @@ call s:WithConceal('html_c_e', 'syn match pandocHTMLCommentEnd /-->/ contained',
 " Set embedded LaTex (pandoc extension) highlighting
 " Unset current_syntax so the 2nd include will work
 unlet b:current_syntax
+" https://github.com/vim-pandoc/vim-pandoc-syntax/issues/306
+" TODO: To check if vimtex exists, try calling vimtex#option#init.
 syn include @LATEX syntax/tex.vim
-syn region pandocLaTeXInlineMath start=/\v\\@<!\$\S@=/ end=/\v\\@<!\$\d@!/ keepend contains=@LATEX
-syn region pandocLaTeXInlineMath start=/\\\@<!\\(/ end=/\\\@<!\\)/ keepend contains=@LATEX
+" TODO: configuration for this?
+call vimtex#syntax#p#amsmath#load({})
+" TODO: g:vimtex_syntax_conceal.math_bounds
+syn region pandocLaTeXInlineMath matchgroup=texMathDelimZone concealends start=/\v\\@<!\$\S@=/ end=/\v\\@<!\$\d@!/ keepend contains=@texClusterMath
+syn region pandocLaTeXInlineMath matchgroup=texMathDelimZone concealends start=/\\\@<!\\(/ end=/\\\@<!\\)/ keepend contains=@texClusterMath
 syn match pandocEscapedDollar /\\\$/ conceal cchar=$
 syn match pandocProtectedFromInlineLaTeX /\\\@<!\${.*}\(\(\s\|[[:punct:]]\)\([^$]*\|.*\(\\\$.*\)\{2}\)\n\n\|$\)\@=/ display
-" contains=@LATEX
-syn region pandocLaTeXMathBlock start=/\$\$/ end=/\$\$/ keepend contains=@LATEX
-syn region pandocLaTeXMathBlock start=/\\\@<!\\\[/ end=/\\\@<!\\\]/ keepend contains=@LATEX
+syn region pandocLaTeXMathBlock start=/\$\$/ end=/\$\$/ keepend contains=@texClusterMath
+syn region pandocLaTeXMathBlock start=/\\\@<!\\\[/ end=/\\\@<!\\\]/ keepend contains=@texClusterMath
+" NOTE: vim 8.2.2761 is recommended because vimtex uses contains=TOP (e.g.
+" texArg), which doesn't work properly when syn-included.
 syn match pandocLaTeXCommand /\\[[:alpha:]]\+\(\({.\{-}}\)\=\(\[.\{-}\]\)\=\)*/ contains=@LATEX
-syn region pandocLaTeXRegion start=/\\begin{\z(.\{-}\)}/ end=/\\end{\z1}/ keepend contains=@LATEX
+" pandocLaTeXRegion should contain itself to support nested environment
+" because texCmdEnv is not defined as syn-region.
+syn region pandocLaTeXRegion start=/\\begin{\z(.\{-}\)}/ end=/\\end{\z1}/ keepend extend contains=@LATEX,pandocLaTeXRegion
 " we rehighlight sectioning commands, because otherwise tex.vim captures all text until EOF or a new sectioning command
 syn region pandocLaTexSection start=/\\\(part\|chapter\|\(sub\)\{,2}section\|\(sub\)\=paragraph\)\*\=\(\[.*\]\)\={/ end=/\}/ keepend
 syn match pandocLaTexSectionCmd /\\\(part\|chapter\|\(sub\)\{,2}section\|\(sub\)\=paragraph\)/ contained containedin=pandocLaTexSection
